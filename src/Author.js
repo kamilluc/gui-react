@@ -56,12 +56,12 @@ class Author extends React.Component {
                 <div>
                     <Ui.FlatButton label="New" secondary={true} onClick={this.handleNew}
                                    icon={<Ui.FontIcon className="material-icons">create</Ui.FontIcon>} />
+
                     <Ui.FlatButton disabled={!this.state.selectedAuthor} label="Save"
-                                   primary={true} onClick={this.handleSave} icon={<Ui.FontIcon className="materialicons">save</Ui.FontIcon>}
-                    />
+                                   primary={true} onClick={this.handleSave} icon={<Ui.FontIcon className="material-icons">save</Ui.FontIcon>}/>
+
                     <Ui.FlatButton disabled={!this.state.selectedAuthor} label="Remove"
-                                   secondary={true} onClick={this.handleRemove} icon={<Ui.FontIcon className="materialicons">delete</Ui.FontIcon>}
-                    />
+                                   secondary={true} onClick={this.handleRemove} icon={<Ui.FontIcon className="material-icons">delete</Ui.FontIcon>}/>
                 </div>
             </form>
         )
