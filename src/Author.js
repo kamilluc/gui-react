@@ -4,6 +4,7 @@ import * as Ui from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Auth from "./Auth";
 import axios from 'axios';
+import Snackbar from 'material-ui/Snackbar';
 
 
 class Author extends React.Component {
@@ -17,6 +18,7 @@ class Author extends React.Component {
                 name: ''
             },
             authors: [],
+            open: false,
         };
         this.instance = axios.create({
             baseURL: 'http://restapp.dev/app_dev.php/author',
@@ -24,9 +26,9 @@ class Author extends React.Component {
         });
     }
 
-    // handleAuthorClick = (author) => {
-    //     this.setState({selectedAuthor: author});
-    // };
+    handleAuthorClick = (author) => {
+        this.setState({selectedAuthor: author});
+    };
     //
     // handleAuthorClick = (author) => {
     //     this.setState({selectedAuthor: author});
@@ -49,20 +51,36 @@ class Author extends React.Component {
         });
     };
     handleSave = () => {
-        let id = this.state.selectedAuthor.id;
-        this.instance.post(id + '/update', {
-            name: this.state.selectedAuthor.name
-        }).then(response => {
-            this.refreshAuthorsList();
-        })
+        if (this.state.selectedAuthor.name == '') {
+            this.setState({
+                open: true,
+            });
+        }
+        else {
+            let id = this.state.selectedAuthor.id;
+            //this.instance.post(id + '/update', {
+            this.instance.post('/update/' + id, {
+                name: this.state.selectedAuthor.name
+            }).then(response => {
+                this.refreshAuthorsList();
+            })
+        }
     };
     handleNew = () => {
-        this.instance.put('/create', {
-            name: this.state.selectedAuthor.name
-        }).then(response => {
-            this.refreshAuthorsList();
-        })
+        if (this.state.selectedAuthor.name == '') {
+            this.setState({
+                open: true,
+            });
+        }
+        else {
+            this.instance.put('/create', {
+                name: this.state.selectedAuthor.name
+            }).then(response => {
+                this.refreshAuthorsList();
+            })
+        }
     };
+
     handleRemove = () => {
         let id = this.state.selectedAuthor.id;
         this.instance.delete(id).then(response => {
@@ -88,6 +106,12 @@ class Author extends React.Component {
                     this.props.history.push('/login');
             });
     };
+
+    handleRequestClose = () => {
+         this.setState({
+             open: false,
+         });
+     };
 
     componentDidMount = () => {
         if(!Auth.isUserAuthenticated())
@@ -119,15 +143,12 @@ class Author extends React.Component {
             </form>
         )
     };
-
+    // <Ui.ListItem primaryText={author.name} onClick={() => this.handleAuthorClick(author)}/>
     AuthorList = (props) => {
         const authors = props.authors;
-        const listItems = authors.map((author) =>
-           // <Ui.ListItem primaryText={author.name} onClick={() => this.handleAuthorClick(author)}/>
-            <Ui.ListItem key={author.id}
-                         primaryText={author.name}
-                         onClick={() => this.handleAuthorClick(author)}/>
-        );
+        const listItems = authors.map((author) => <Ui.ListItem key={author.id} primaryText={author.name} onClick={() => {
+            return this.handleAuthorClick(author);
+        }}/>);
         return (
             <Ui.List>{listItems} </Ui.List>
         );
@@ -144,6 +165,7 @@ class Author extends React.Component {
                     <Ui.Paper zDepth={1} className="right-column">
                         <this.AuthorForm/>
                     </Ui.Paper>
+                    <Snackbar open={this.state.open} message="Error! Empty name." autoHideDuration={4000} onRequestClose={this.handleRequestClose}/>
                 </div>
             </MuiThemeProvider>
         )
