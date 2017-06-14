@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './Author.css';
+import './Book.css';
 import * as Ui from 'material-ui';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Auth from "./Auth";
@@ -7,98 +7,84 @@ import axios from 'axios';
 import Snackbar from 'material-ui/Snackbar';
 
 
-class Author extends React.Component {
+class Book extends React.Component {
     instance = null;
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedAuthor: {
+            selectedBook: {
                 id: '',
-                name: ''
+                title: ''
             },
-            authors: [],
+            books: [],
             open: false,
         };
         this.instance = axios.create({
-            baseURL: 'http://restapp.dev/author',
+            baseURL: 'http://restapp.dev/book',
             headers: {'Authorization': 'Bearer ' + Auth.getToken()}
         });
     }
 
-    handleAuthorClick = (author) => {
-        this.setState({selectedAuthor: author});
+    handleBookClick = (book) => {
+        this.setState({selectedBook: book});
     };
-    //
-    // handleAuthorClick = (author) => {
-    //     this.setState({selectedAuthor: author});
-    // };
-    // handleSave = () => {
-    //     // tu obsluzymy zapytanie HTTP - edycja autora
-    // };
-    // handleNew = () => {
-    //     // tu obsluzymy zapytanie HTTP - nowy autor
-    // };
-    // handleRemove = () => {
-    //     // tu obsluzymy zapytanie HTTP - nowy autor
-    // };
 
-    onAuthorNameChange = (event) => {
-        let author = this.state.selectedAuthor;
-        author.name = event.target.value;
+    onBookTitleChange = (event) => {
+        let book = this.state.selectedBook;
+        book.title = event.target.value;
         this.setState({
-            selectedAuthor: author
+            selectedBook: book
         });
     };
     handleSave = () => {
-        if (this.state.selectedAuthor.name == '') {
+        if (this.state.selectedBook.title == '') {
             this.setState({
                 open: true,
             });
         }
         else {
-            let id = this.state.selectedAuthor.id;
-            //this.instance.post(id + '/update', {
+            let id = this.state.selectedBook.id;
             this.instance.post('/update/' + id, {
-                name: this.state.selectedAuthor.name
+                title: this.state.selectedBook.title
             }).then(response => {
-                this.refreshAuthorsList();
+                this.refreshBooksList();
             })
         }
     };
     handleNew = () => {
-        if (this.state.selectedAuthor.name == '') {
+        if (this.state.selectedBook.title == '') {
             this.setState({
                 open: true,
             });
         }
         else {
             this.instance.put('/create', {
-                name: this.state.selectedAuthor.name
+                title: this.state.selectedBook.title
             }).then(response => {
-                this.refreshAuthorsList();
+                this.refreshBooksList();
             })
         }
     };
 
     handleRemove = () => {
-        let id = this.state.selectedAuthor.id;
+        let id = this.state.selectedBook.id;
         this.instance.delete(id).then(response => {
-            this.refreshAuthorsList();
+            this.refreshBooksList();
             // Wyczysc formularz
-            this.setState({selectedAuthor : {
+            this.setState({selectedBook : {
                 id: '',
-                name: ''
+                title: ''
             }})
         })
     };
 
-    refreshAuthorsList = function() {
+    refreshBooksList = function() {
         this.instance.get('/')
             .then(response => {
-                let authors = response.data;
+                let books = response.data;
                 this.setState({
-                    authors
+                    books
                 });
             })
             .catch(error => {
@@ -117,25 +103,25 @@ class Author extends React.Component {
         if(!Auth.isUserAuthenticated())
             this.props.history.push('/login');
         else {
-            this.refreshAuthorsList();
+            this.refreshBooksList();
         }
     };
 
-    AuthorForm = (props) => {
-        let nameInput = <Ui.TextField floatingLabelText="Name" value={this.state.selectedAuthor.name}
-                                      onChange={this.onAuthorNameChange}/>;
+    BookForm = (props) => {
+        let titleInput = <Ui.TextField floatingLabelText="Title" value={this.state.selectedBook.title}
+                                      onChange={this.onBookTitleChange}/>;
         return (
             <form>
                 <div>
-                    {nameInput}
+                    {titleInput}
                 </div>
                 <div>
                     <Ui.FlatButton label="New" secondary={true} onClick={this.handleNew}
                                    icon={<Ui.FontIcon className="material-icons">create</Ui.FontIcon>}/>
-                    <Ui.FlatButton disabled={!this.state.selectedAuthor.id} label="Save" primary={true}
+                    <Ui.FlatButton disabled={!this.state.selectedBook.id} label="Save" primary={true}
                                    onClick={this.handleSave}
                                    icon={<Ui.FontIcon className="material-icons">save</Ui.FontIcon>}/>
-                    <Ui.FlatButton disabled={!this.state.selectedAuthor.id} label="Remove"
+                    <Ui.FlatButton disabled={!this.state.selectedBook.id} label="Remove"
                                    secondary={true}
                                    onClick={this.handleRemove}
                                    icon={<Ui.FontIcon className="material-icons">delete</Ui.FontIcon>}/>
@@ -143,11 +129,11 @@ class Author extends React.Component {
             </form>
         )
     };
-    // <Ui.ListItem primaryText={author.name} onClick={() => this.handleAuthorClick(author)}/>
-    AuthorList = (props) => {
-        const authors = props.authors;
-        const listItems = authors.map((author) => <Ui.ListItem key={author.id} primaryText={author.name} onClick={() => {
-            return this.handleAuthorClick(author);
+
+    BookList = (props) => {
+        const books = props.books;
+        const listItems = books.map((book) => <Ui.ListItem key={book.id} primaryText={book.title} onClick={() => {
+            return this.handleBookClick(book);
         }}/>);
         return (
             <Ui.List>{listItems} </Ui.List>
@@ -158,14 +144,14 @@ class Author extends React.Component {
         return (
             <MuiThemeProvider>
                 <div>
-                    <h3>Authors</h3>
+                    <h3>Books</h3>
                     <Ui.Paper zDepth={1} className="left-column">
-                        <this.AuthorList authors={this.state.authors}/>
+                        <this.BookList books={this.state.books}/>
                     </Ui.Paper>
                     <Ui.Paper zDepth={1} className="right-column">
-                        <this.AuthorForm/>
+                        <this.BookForm/>
                     </Ui.Paper>
-                    <Snackbar open={this.state.open} message="Error! Empty name." autoHideDuration={4000} onRequestClose={this.handleRequestClose}/>
+                    <Snackbar open={this.state.open} message="Error! Empty title." autoHideDuration={4000} onRequestClose={this.handleRequestClose}/>
                 </div>
             </MuiThemeProvider>
         )
@@ -173,4 +159,4 @@ class Author extends React.Component {
 
 
 }
-export default Author;
+export default Book;

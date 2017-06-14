@@ -38,7 +38,7 @@ class Navigation extends React.Component {
                         <Ui.MenuItem primaryText="Authors" leftIcon={<Ui.FontIcon className="material-icons">face</Ui.FontIcon>} containerElement={<Link to="/authors"/>}
                         ></Ui.MenuItem>
 
-                        <Ui.MenuItem primaryText="Books" leftIcon={<Ui.FontIcon className="material-icons">book</Ui.FontIcon>} containerElement={<Link to="/authors"/>}
+                        <Ui.MenuItem primaryText="Books" leftIcon={<Ui.FontIcon className="material-icons">book</Ui.FontIcon>} containerElement={<Link to="/books"/>}
                         ></Ui.MenuItem>
 
                         <Ui.MenuItem primaryText="Browser" leftIcon={<Ui.FontIcon className="material-icons">pageview</Ui.FontIcon>}  containerElement={<Link to="/login"/>}></Ui.MenuItem>

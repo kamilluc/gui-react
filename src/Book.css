@@ -1,0 +1,14 @@
+.left-column {
+    width: calc(50% - 50px);
+    display: block;
+    float: left;
+    margin-left: 20px;
+    padding: 20px;
+}
+.right-column {
+    width: calc(50% - 10px);
+    display: block;
+    margin-right: 20px;
+    float: right;
+    padding: 20px;
+}

@@ -18,11 +18,11 @@ class Login extends React.Component {
 
 
     handleAuthorClick = (author) => {
-        this.setState({selectedAuthor: author});
+        this.setState({selectedBook: author});
     };
 
     handleAuthorClick = (author) => {
-        this.setState({selectedAuthor: author});
+        this.setState({selectedBook: author});
     };
     handleSave = () => {
         // tu obsluzymy zapytanie HTTP - edycja autora
@@ -65,7 +65,7 @@ class Login extends React.Component {
                 // zapisujemy token
                 Auth.authenticateUser(xhr.response.token);
                 // zmieniamy routing
-                this.props.history.push('/authors');
+                this.props.history.push('/books');
             } else {
                 // cos poszlo nie tak
                 // pobieramy informacje o bledach z
